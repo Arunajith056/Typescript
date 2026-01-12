@@ -25,6 +25,9 @@ const myBook: Book = {
   genres: ["Programming", "Software Engineering"]
 };
 
+// Example usage
+console.log('My book:', myBook.title);
+
 // ==================== SOLUTION 2: FUNCTION TYPES ====================
 
 type UserFetcherOptions = {
@@ -33,9 +36,10 @@ type UserFetcherOptions = {
 };
 
 type User = {
-  id: number;
+  id: string; // Changed to string for consistency
   name: string;
   email: string;
+  orders: string[]; // Added orders property
   profile?: {
     age: number;
     bio: string;
@@ -72,6 +76,11 @@ const fetchUserById: UserFetcher = async (id, options) => {
     return null;
   }
 };
+
+// Example usage to avoid unused warning
+fetchUserById(1, { includeProfile: true }).then(user => {
+  console.log('Fetched user:', user?.name || 'User not found');
+});
 
 // ==================== SOLUTION 3: INTERFACE VS TYPE ====================
 
@@ -110,6 +119,12 @@ const myMotorcycle: Motorcycle = {
   hasWindshield: false,
   engineSize: 750
 };
+
+// Example usage
+console.log('Vehicles:', { 
+  car: `${myCar.make} ${myCar.model}`, 
+  motorcycle: `${myMotorcycle.make} ${myMotorcycle.model}` 
+});
 
 // ==================== SOLUTION 4: UNION TYPES ====================
 
@@ -192,6 +207,17 @@ function processNumberInput(input: unknown): number {
   return input * 2;
 }
 
+// Example usage
+processUnknownData(["hello", "world"]);
+processUnknownData(myBook);
+
+try {
+  const result = processNumberInput(42);
+  console.log('Processed number:', result);
+} catch (error) {
+  console.error('Number processing failed:', error);
+}
+
 // ==================== SOLUTION 6: GENERIC FUNCTIONS ====================
 
 function getFirstElement<T>(array: T[]): T | undefined {
@@ -226,6 +252,15 @@ const longStrings = filterArray(strings, s => s.length > 4); // string[]
 const userAges = { alice: 25, bob: 30, charlie: 35 };
 const userAgeDescriptions = mapObject(userAges, age => `${age} years old`);
 
+// Example usage
+console.log('Generic function results:', {
+  firstNumber,
+  firstString,
+  evenNumbers: evenNumbers.length,
+  longStrings: longStrings.length,
+  descriptions: Object.keys(userAgeDescriptions).length
+});
+
 // ==================== SOLUTION 7: REAL-WORLD SCENARIO ====================
 
 type Product = {
@@ -250,12 +285,7 @@ type Order = {
   status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
 };
 
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  orders: string[]; // order IDs
-};
+// User type already defined above, remove this duplicate
 
 type ShoppingCartItem = {
   product: Product;
@@ -317,7 +347,7 @@ const processCheckout: ProcessCheckout = async (cart, user) => {
   // Create order
   const order: Order = {
     id: `order-${Date.now()}`,
-    userId: user.id,
+    userId: user.id, // user.id is already string type
     items: cart.items.map(item => ({
       productId: item.product.id,
       quantity: item.quantity,
@@ -371,6 +401,12 @@ const stringFields: DatabaseRecordStrings = {
   email: "john@example.com"
   // age, createdAt, updatedAt are not included (wrong type)
 };
+
+// Example usage
+console.log('Database utility examples:', {
+  updateId: updateRecord.id,
+  stringCount: Object.keys(stringFields).length
+});
 
 // ==================== SOLUTION 9: ERROR HANDLING ====================
 

@@ -9,10 +9,16 @@
 
 // Basic type assertion with 'as'
 const userInput = document.getElementById("user-input") as HTMLInputElement;
-const jsonData = JSON.parse(response) as UserData;
+const mockResponse = '{"id": 1, "name": "John", "email": "john@example.com"}';
+const jsonData = JSON.parse(mockResponse) as UserData;
 
 // Angle bracket syntax (less common, avoid in JSX)
 const element = <HTMLButtonElement>document.getElementById("button");
+
+// Mock function for demonstration
+function getUser(): UserData | null {
+  return { id: 1, name: "John", email: "john@example.com" };
+}
 
 // Non-null assertion operator (!)
 const userElement = document.querySelector(".user")!; // Assert it's not null

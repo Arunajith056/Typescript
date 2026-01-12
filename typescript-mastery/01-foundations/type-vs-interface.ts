@@ -73,7 +73,7 @@ type ID = string | number;
 // Type for primitives and complex combinations
 type StringOrNumber = string | number;
 type UserID = string;
-type EventHandler = (event: Event) => void;
+type ButtonEventHandler = (event: Event) => void; // Renamed to avoid duplicate
 
 // Intersection types (combining types)
 type UserWithRole = User & {
@@ -269,10 +269,10 @@ interface Serializable {
 type EventMap = {
   click: MouseEvent;
   submit: SubmitEvent;
-  change: ChangeEvent;
+  change: Event; // Changed from ChangeEvent to Event to fix missing type
 };
 
-type EventHandler<K extends keyof EventMap> = (event: EventMap[K]) => void;
+type FormEventHandler<K extends keyof EventMap> = (event: EventMap[K]) => void; // Renamed to avoid duplicate
 
 // ==================== MIGRATION PATTERNS ====================
 
@@ -303,6 +303,6 @@ export {
   FormField,
   LoginForm,
   NotificationLevel,
-  EventHandler,
+  FormEventHandler, // Fixed reference
   Serializable
 };

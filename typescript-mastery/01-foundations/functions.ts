@@ -32,6 +32,14 @@ function sum(...numbers: number[]): number {
   return numbers.reduce((total, num) => total + num, 0);
 }
 
+// Example usage
+const greeting = greet("TypeScript");
+const newUser = createUser("John", "john@example.com", 25);
+const price = formatCurrency(99.99, "EUR");
+const total = sum(1, 2, 3, 4, 5);
+
+console.log('Basic functions:', { greeting, newUser: newUser.name, price, total });
+
 // ==================== FUNCTION TYPE EXPRESSIONS ====================
 
 // Type alias for function signature
@@ -46,6 +54,14 @@ const divide: MathOperation = (a, b) => {
 
 // Array of functions with same signature
 const operations: MathOperation[] = [add, multiply, divide];
+
+// Example usage
+const result1 = add(5, 3);
+const result2 = multiply(4, 6);
+const operationResults = operations.map(op => op(10, 2));
+
+console.log('Math operations:', { result1, result2, operationResults });
+
 
 // ==================== HIGHER-ORDER FUNCTIONS ====================
 
@@ -64,6 +80,14 @@ function createMultiplier(factor: number): (value: number) => number {
 
 const double = createMultiplier(2);
 const triple = createMultiplier(3);
+
+// Example usage
+const doubled = double(5);
+const tripled = triple(4);
+const processedNumbers = processArray([1, 2, 3], (x, i) => x * i);
+
+console.log('Higher-order functions:', { doubled, tripled, processedNumbers });
+
 
 // ==================== FUNCTION OVERLOADS ====================
 
@@ -93,6 +117,12 @@ const stringResult = processData("hello"); // string
 const numberResult = processData(42); // number
 const booleanResult = processData(true); // boolean
 
+// Example usage
+console.log('Processed data:', { stringResult, numberResult, booleanResult });
+
+// Example usage
+console.log('Processed data:', { stringResult, numberResult, booleanResult });
+
 // ==================== ASYNC FUNCTION TYPES ====================
 
 // Async function with Promise return type
@@ -118,6 +148,20 @@ const getUserFromAPI: AsyncUserFetcher = async (id) => {
   return response.json();
 };
 
+// Example usage
+fetchUser(1).then(user => {
+  console.log('Fetched user:', user?.name || 'User not found');
+}).catch(console.error);
+
+// Example usage
+fetchUser(1).then(user => {
+  console.log('Fetched user:', user?.name || 'User not found');
+}).catch(console.error);
+
+getUserFromAPI(1).then(user => {
+  console.log('API user:', user?.name || 'User not found');
+}).catch(console.error);
+
 // ==================== CALLBACK FUNCTIONS ====================
 
 // Event handler types
@@ -141,6 +185,20 @@ function apiCall<T>(
     .catch(onError);
 }
 
+// Example usage
+apiCall<User>(
+  '/api/users/1',
+  (user) => console.log('API Success:', user.name),
+  (error) => console.error('API Error:', error.message)
+);
+
+// Example usage
+apiCall<User>(
+  '/api/users/1',
+  (user) => console.log('Success:', user.name),
+  (error) => console.error('Error:', error.message)
+);
+
 // ==================== GENERIC FUNCTIONS ====================
 
 // Generic function with type parameter
@@ -162,6 +220,17 @@ function combine<T, U>(first: T, second: U): T & U {
 const user = { name: "John", age: 30 };
 const settings = { theme: "dark", notifications: true };
 const userWithSettings = combine(user, settings);
+
+const userName = getProperty(user, "name");
+const userAge = getProperty(user, "age");
+const identityTest = identity("Hello World");
+
+console.log('Generic functions:', { 
+  userWithSettings: userWithSettings.name, 
+  userName, 
+  userAge, 
+  identityTest 
+});
 
 // ==================== UTILITY FUNCTION PATTERNS ====================
 
@@ -197,6 +266,22 @@ const usersToMap: Transformer<User[], Map<number, User>> = (users) => {
   return new Map(users.map(user => [user.id, user]));
 };
 
+// Example usage
+const testUser = { id: 1, name: "John", email: "john@example.com", age: 30 };
+const isValidString = isString("test");
+const isValidNumber = isNumber(42);
+const isValidUser = isUser(testUser);
+const displayName = userToDisplayName(testUser);
+const usersMap = usersToMap([testUser]);
+
+console.log('Validation results:', { 
+  isValidString, 
+  isValidNumber, 
+  isValidUser, 
+  displayName,
+  mapSize: usersMap.size 
+});
+
 // ==================== REAL-WORLD EXAMPLES ====================
 
 // Repository pattern with functions
@@ -225,6 +310,17 @@ const passwordValidator: FieldValidator = (password) => {
   }
   return null;
 };
+
+// Example usage
+const emailResult = emailValidator("test@example.com");
+const passwordResult = passwordValidator("StrongPass123");
+const invalidEmailResult = emailValidator("invalid-email");
+
+console.log('Validation results:', { 
+  emailResult, 
+  passwordResult, 
+  invalidEmailResult 
+});
 
 // Event system
 type EventMap = {
@@ -270,6 +366,17 @@ async function executeMiddleware<T>(
   return result;
 }
 
+// Example usage
+const exampleMiddlewares: MiddlewareStack<string> = [
+  async (data) => data.toUpperCase(),
+  async (data) => `[${data}]`,
+  async (data) => `${data}!`
+];
+
+executeMiddleware("hello", exampleMiddlewares).then(result => {
+  console.log('Middleware result:', result); // "[HELLO]!"
+});
+
 // ==================== PERFORMANCE OPTIMIZATIONS ====================
 
 // Memoization
@@ -295,11 +402,11 @@ function debounce<Args extends any[]>(
   fn: (...args: Args) => void,
   delay: number
 ): (...args: Args) => void {
-  let timeoutId: NodeJS.Timeout | undefined;
+  let timeoutId: number | undefined;
   
   return (...args: Args): void => {
     clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => fn(...args), delay);
+    timeoutId = setTimeout(() => fn(...args), delay) as unknown as number;
   };
 }
 

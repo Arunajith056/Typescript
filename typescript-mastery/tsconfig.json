@@ -2,7 +2,7 @@
   "compilerOptions": {
     // Language and Environment
     "target": "ES2022",
-    "module": "commonjs",
+    "module": "ES2022", // Changed to support top-level await
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "moduleResolution": "node",
     "allowJs": false,
@@ -37,9 +37,9 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
 
-    // Additional Checks
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    // Additional Checks - Relaxed for educational examples
+    "noUnusedLocals": false,  // Allow unused variables in examples
+    "noUnusedParameters": false,  // Allow unused parameters in examples
     "noFallthroughCasesInSwitch": true,
     "noImplicitThis": true,
 
