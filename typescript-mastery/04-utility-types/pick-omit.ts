@@ -228,24 +228,201 @@ interface BaseComponentProps {
   children?: string | Element | Element[];
 }
 
-interface ButtonProps extends BaseComponentProps {
-  variant: "primary" | "secondary" | "danger";
-  size: "small" | "medium" | "large";
-  disabled?: boolean;
-  loading?: boolean;
+// Option 1: React Button Props (extends React's ButtonHTMLAttributes)
+// interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+//   variant?: "primary" | "secondary" | "danger" | "success" | "warning" | "info";
+//   size?: "xs" | "sm" | "md" | "lg" | "xl";
+//   loading?: boolean;
+//   icon?: string;
+//   iconPosition?: "left" | "right";
+//   fullWidth?: boolean;
+//   rounded?: boolean;
+//   outlined?: boolean;
+// }
+
+// Option 2: Vanilla TypeScript (extends HTMLButtonElement interface)
+interface ButtonProps extends Omit<Partial<HTMLButtonElement>, 'children'> {
+  // Event handlers (these need to be added separately)
   onClick?: (event: MouseEvent) => void;
-  type?: "button" | "submit" | "reset";
+  onFocus?: (event: FocusEvent) => void;
+  onBlur?: (event: FocusEvent) => void;
+  onKeyDown?: (event: KeyboardEvent) => void;
+  onMouseEnter?: (event: MouseEvent) => void;
+  onMouseLeave?: (event: MouseEvent) => void;
+  
+  // ARIA attributes
+  'aria-label'?: string;
+  'aria-describedby'?: string;
+  'aria-expanded'?: boolean;
+  'aria-pressed'?: boolean;
+  
+  // Data attributes
+  'data-testid'?: string;
+  'data-cy'?: string;
+  
+  // Your custom properties
+  variant?: "primary" | "secondary" | "danger" | "success" | "warning" | "info";
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  loading?: boolean;
+  icon?: string;
+  iconPosition?: "left" | "right";
+  fullWidth?: boolean;
+  rounded?: boolean;
+  outlined?: boolean;
+  children?: string | Element | Element[];
 }
 
-// Different button variations
-type PrimaryButton = Pick<ButtonProps, "size" | "disabled" | "loading" | "onClick" | "type" | "children">;
-type IconButton = Omit<ButtonProps, "children"> & { icon: string };
-type LinkButton = Omit<ButtonProps, "onClick" | "type"> & { href: string; target?: string };
+// Additional element interface examples
+interface ImageProps extends Partial<HTMLImageElement> {
+  alt: string; // Required for accessibility
+  loading?: "eager" | "lazy";
+}
+
+interface SelectProps extends Omit<Partial<HTMLSelectElement>, 'options'> {
+  options: { value: string; label: string }[];
+  placeholder?: string;
+}
+
+// Option 3: Using Pick to get specific HTMLButtonElement properties + custom props
+interface PickedButtonProps extends Partial<Pick<HTMLButtonElement, 
+  'accessKey' | 'autofocus' | 'className' | 'dir' | 'disabled' | 'form' | 
+  'formAction' | 'formEnctype' | 'formMethod' | 'formNoValidate' | 'formTarget' |
+  'hidden' | 'id' | 'lang' | 'name' | 'style' | 'tabIndex' | 'title' | 'type' | 'value'
+>> {
+  // Event handlers (these are separate from HTMLButtonElement properties)
+  onClick?: (event: MouseEvent) => void;
+  onFocus?: (event: FocusEvent) => void;
+  onBlur?: (event: FocusEvent) => void;
+  onKeyDown?: (event: KeyboardEvent) => void;
+  onMouseEnter?: (event: MouseEvent) => void;
+  onMouseLeave?: (event: MouseEvent) => void;
+  
+  // ARIA attributes
+  'aria-label'?: string;
+  'aria-describedby'?: string;
+  'aria-expanded'?: boolean;
+  'aria-pressed'?: boolean;
+  
+  // Data attributes
+  'data-testid'?: string;
+  'data-cy'?: string;
+  
+  // Your custom properties
+  variant?: "primary" | "secondary" | "danger" | "success" | "warning" | "info";
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  loading?: boolean;
+  icon?: string;
+  iconPosition?: "left" | "right";
+  fullWidth?: boolean;
+  rounded?: boolean;
+  outlined?: boolean;
+  children?: string | Element | Element[];
+}
+
+// Different button variations using Pick/Omit
+type SubmitButton = Pick<ButtonProps, "variant" | "size" | "loading" | "disabled" | "form" | "formAction" | "children">;
+type IconOnlyButton = Omit<ButtonProps, "children"> & { "aria-label": string };
+type LinkStyleButton = Omit<ButtonProps, "type" | "form" | "formAction"> & { href?: string };
+
+// Usage examples - extending HTMLButtonElement automatically gives you all native props
+const completeButton: ButtonProps = {
+  // Native HTML button properties (automatically inherited from HTMLButtonElement)
+  type: "submit",
+  disabled: false,
+  className: "my-custom-button",
+  id: "submit-btn",
+  title: "Click to submit form",
+  tabIndex: 0,
+  autofocus: true,
+  // form: "my-form", // This would need to be an HTMLFormElement reference
+  formAction: "/submit",
+  formMethod: "POST",
+  
+  // Event handlers
+  onClick: (event: MouseEvent) => console.log('Button clicked!', event),
+  onFocus: (event: FocusEvent) => console.log('Button focused'),
+  onBlur: (event: FocusEvent) => console.log('Button blurred'),
+  onKeyDown: (event: KeyboardEvent) => {
+    if (event.key === 'Enter') console.log('Enter pressed');
+  },
+  
+  // ARIA attributes
+  "aria-label": "Submit the form",
+  "aria-describedby": "submit-help",
+  "aria-expanded": false,
+  
+  // Data attributes for testing
+  "data-testid": "submit-button",
+  "data-cy": "submit-btn",
+  
+  // Your custom properties
+  variant: "primary",
+  size: "lg",
+  loading: false,
+  icon: "check",
+  iconPosition: "left",
+  fullWidth: false,
+  rounded: true,
+  outlined: false,
+  children: "Submit Form"
+} as ButtonProps; // Type assertion to handle HTMLElement property conflicts
+
+const pickedButton: PickedButtonProps = {
+  // Selected HTMLButtonElement properties + custom props
+  type: "button",
+  disabled: false,
+  className: "picked-btn",
+  variant: "secondary",
+  size: "md",
+  onClick: (event: MouseEvent) => console.log('Picked button clicked'),
+  "aria-label": "Custom button",
+  "data-testid": "picked-btn"
+};
+
+const iconButton: IconOnlyButton = {
+  variant: "secondary",
+  size: "md",
+  icon: "trash",
+  className: "icon-btn",
+  disabled: false, // Now properly typed from HTMLButtonElement
+  type: "button",  // Native HTML button property
+  onClick: (event: MouseEvent) => console.log('Delete clicked'),
+  "aria-label": "Delete item", // Required for icon-only buttons
+  "data-testid": "delete-btn"
+};
 
 // Usage example (commented out to avoid compilation issues)
-// const PrimaryButtonComponent = (props: PrimaryButton) => {
-//   return { ...props, className: "btn btn-primary" };
+// const MyButton = (props: ButtonProps) => {
+//   const { variant, size, loading, icon, iconPosition, children, ...nativeProps } = props;
+//   return (
+//     <button 
+//       {...nativeProps}
+//       className={`btn btn-${variant} btn-${size} ${loading ? 'loading' : ''} ${nativeProps.className || ''}`}
+//       disabled={nativeProps.disabled || loading}
+//     >
+//       {icon && iconPosition === 'left' && <span className={`icon-${icon}`} />}
+//       {loading ? 'Loading...' : children}
+//       {icon && iconPosition === 'right' && <span className={`icon-${icon}`} />}
+//     </button>
+//   );
 // };
+
+// Usage examples:
+// <MyButton variant="primary" size="lg" onClick={() => console.log('clicked')}>
+//   Click me
+// </MyButton>
+//
+// <MyButton 
+//   variant="danger" 
+//   size="sm" 
+//   icon="trash" 
+//   iconPosition="left"
+//   aria-label="Delete item"
+//   data-testid="delete-btn"
+//   onClick={handleDelete}
+// >
+//   Delete
+// </MyButton>
 
 // ==================== API CLIENT PATTERNS ====================
 
@@ -440,9 +617,12 @@ export {
   BlogPostSummary,
   BlogPostRepository,
   ButtonProps,
-  PrimaryButton,
-  IconButton,
-  LinkButton,
+  ImageProps,
+  SelectProps,
+  PickedButtonProps,
+  SubmitButton,
+  IconOnlyButton,
+  LinkStyleButton,
   ApiEndpoint,
   GetEndpoint,
   PostEndpoint,
